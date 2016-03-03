@@ -1,0 +1,20 @@
+{
+  "name": "new_project",
+  "version": "1.0.0",
+  "description": "this is new project",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start":"node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Shanky0009/new-project.git"
+  },
+  "author": "shanky",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shanky0009/new-project/issues"
+  },
+  "homepage": "https://github.com/Shanky0009/new-project#readme"
+}
