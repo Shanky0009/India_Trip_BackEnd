@@ -1,10 +1,10 @@
 var mongoose=require("mongoose"),
    Schema=mongoose.Schema;
+// var ObjectId = mongoose.Schema.Types.ObjectId;
 
-
- 
+//profile schema 
 var profileSchema=Schema({
- 	first_name:{type:String,default:'',index:{unique:true}},
+ 	first_name:{type:String,default:''},
  	last_name:{type:String,default:''},
  	city:{type:String,default:''},
  	state:{type:String,default:''},
@@ -19,4 +19,5 @@ var profileSchema=Schema({
  	created:{type:Date,default:Date.now,index:true}
  });
 
+//profile model
 mongoose.model("Profile",profileSchema);

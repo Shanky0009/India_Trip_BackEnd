@@ -4,6 +4,7 @@ var express=require('express'),
  fs=require('fs'),
  session=require('express-session'),
 cookieParser=require('cookie-parser'),
+expressValidator = require('express-validator'),
 app=express();
 
 
@@ -12,7 +13,11 @@ const MongoStore = require('connect-mongo')(session);
 
 
 
-mongoose.connect('mongodb://localhost/test10002');
+mongoose.connect('mongodb://localhost/test10009');
+
+
+
+app.use(cookieParser());
 
 
 app.use(session({secret:'anystring',
@@ -21,15 +26,13 @@ app.use(session({secret:'anystring',
                   resave: true
               }));
 
-app.use(cookieParser());
-
-
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // parse application/json
 app.use(bodyParser.json())
 
+app.use(expressValidator());
 
 
 
