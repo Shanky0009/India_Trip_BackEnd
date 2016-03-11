@@ -1,7 +1,8 @@
-var express=require('express'),
+ var express=require('express'),
  mongoose=require('mongoose'),
  bodyParser=require('body-parser'),
  fs=require('fs'),
+ morgan = require('morgan'),
  session=require('express-session'),
 cookieParser=require('cookie-parser'),
 expressValidator = require('express-validator'),
@@ -16,8 +17,9 @@ const MongoStore = require('connect-mongo')(session);
 mongoose.connect('mongodb://localhost/test10009');
 
 
-
+ 
 app.use(cookieParser());
+
 
 
 app.use(session({secret:'anystring',
@@ -34,6 +36,22 @@ app.use(bodyParser.json())
 
 app.use(expressValidator());
 
+var router = express.Router();
+
+app.set('view engine','ejs');
+
+router.get('/Angular.html',function(req,res)
+{
+  res.sendFile(__dirname+('/Angular.html'));
+})
+
+router.get('/home.html',function(req,res)
+{
+  res.sendFile(__dirname+('/home.html'));
+})
+
+
+
 
 
 fs.readdirSync(__dirname+"/models").forEach(function(filename)
@@ -48,17 +66,19 @@ fs.readdirSync(__dirname+"/models").forEach(function(filename)
 
 
 
+
 fs.readdirSync(__dirname+"/controllers").forEach(function(filename)
 {
 	console.log(filename)
 	if(filename.indexOf('.js'))
 	{
-		require("./controllers/"+filename)(app);
+		require("./controllers/"+filename)(router);
 		
 	}
 });
 
 
+app.use("/api",router);
 /*app.get('/',function(req,res){
 
   if(req.session.data)

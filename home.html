@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>hello</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.js"></script>
+
+		
+	</head>
+
+	<body ng-app="myLog" ng-controller="myCntr">
+
+		<h1>Welcome</h1>
+
+		<div>		
+			<br><input type="submit" ng-click="logout()" value="Logout">		
+		</div>
+
+
+		<div>
+			<table style="margin:0 auto">
+				<tr>
+					<th>post</th>					
+				</tr>
+				<tr ng-repeat="y in posts track by $index">
+				
+				 	<td >
+				 		{{y.postBody}}
+				 		<span ng-click="removePost(y._id)">&times;</span>
+				 	</td>
+
+				</tr>
+			</table>
+
+    		<!-- <ul>
+        		<li ng-repeat="x in posts">{{x.postBody}}</li>
+    		</ul> -->
+		</div>
+
+		<div>
+    		<form>
+    			<input type="textarea" ng-model="postBody" placeholder="Enter your post here">
+    			<input type="submit" ng-click="postbody()" value="post">
+    		</form>
+    		
+		</div>
+   
+	</body>
+</html>

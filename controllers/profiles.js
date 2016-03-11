@@ -7,14 +7,15 @@ var mongoose=require("mongoose"),
 
 	bodyParser=require("body-parser");
 
+var router = express.Router();
 
 var userProfile={};
 
 
-module.exports=function(app) {
+module.exports=function(router){
 
-	app.post('/profile',userProfile.updateUser);
-	app.get('/userprofile',userProfile.show);
+	router.post('/profile',userProfile.updateUser);
+	router.get('/userprofile',userProfile.show);
 }
 
 
@@ -140,7 +141,7 @@ userProfile.updateUser=function(req,res)
     		return;
 
   		}
-
+ 
   		else{
 			Profile.findOneAndUpdate({UserID:id},
 				{$set:{
@@ -160,9 +161,7 @@ userProfile.updateUser=function(req,res)
 				  		console.log("profile updated")
 				})
 			}
-		
-
-	
+			 	
 }
 
 

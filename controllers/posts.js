@@ -8,16 +8,17 @@ var mongoose=require("mongoose"),
 	bodyParser=require("body-parser");
 
 userPost={};
+var router = express.Router();
 
-module.exports=function(app) {
+module.exports=function(router) {
 
-	app.post('/post',userPost.UPost);
-	app.post('/postlike',userPost.PLike);
-	app.post('/showpost',userPost.SPost);
-	app.post('/postcomment',userPost.UComment);
-	app.get('/showcomment',userPost.SComment);
-	app.post('/commentlike',userPost.CLike);
-	app.post('/deletepost',userPost.DelPost);
+	router.post('/post',userPost.UPost);
+	router.post('/postlike',userPost.PLike);
+	router.get('/showpost',userPost.SPost);
+	router.post('/postcomment',userPost.UComment);
+	router.get('/showcomment',userPost.SComment);
+	router.post('/commentlike',userPost.CLike);
+	router.post('/deletepost',userPost.DelPost);
 }
 
 
@@ -73,7 +74,11 @@ userPost.PLike=function(req,res)
 //show posts and there comments
 userPost.SPost=function(req,res)
 {
-	UserPost.findOne({_id:req.body.id}).exec(function(err,data)
+	res.header("Access-Control-Allow-Origin", "http://localhost");
+
+    res.header("Access-Control-Allow-Methods", "GET, POST");
+
+	UserPost.find({postID:req.session.data._id}).exec(function(err,data)
 	{
 		if(!data) res.status(200).json("no data found");
 
@@ -81,7 +86,7 @@ userPost.SPost=function(req,res)
 		{
 			CommentPost.find({commentID:data._id}).exec(function(err,datas)
 			{
-			res.status(200).json(data+" \n "+datas);
+			res.status(200).json(data);
 			})
 		}
 	})
@@ -134,15 +139,25 @@ userPost.CLike=function(req,res)
 userPost.DelPost=function(req,res)
 {
     
-  UserPost.remove({_id:req.body.id}).exec(function(err,data)
-  { 
-  		CommentPost.remove({commentID:data._id}).exec(function(err,data)
-  		{
-  			console.log("data removed");
-  			res.status(200).json("Post is removed");
-  		})
-
-     })
+   if(req.body.id)
+  	{
+	  UserPost.remove({_id:req.body.id}).exec(function(err,data)
+	  { 
+	  	  
+		  		console.log(req.body.id);
+		  		CommentPost.remove({commentID:data._id}).exec(function(err,data)
+		  		{
+		  			console.log("data removed");
+		  			res.status(200).json("Post is removed");
+		  		})
+	  		
+	  })
+  	}
+  	else
+  	{	
+		console.log("No ID Defined")
+		res.status(404).json("Worng ID")
+  	}
     
 }
   

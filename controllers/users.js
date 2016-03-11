@@ -10,19 +10,21 @@ var mongoose=require("mongoose"),
 	bodyParser=require("body-parser");
 
 
-
+var router = express.Router();
 var userMethod={};
 
 
-module.exports=function(app)
+module.exports=function(router)
 {
 	
-	app.post('/users',userMethod.create)
-	app.get("/user",userMethod.show);
-  	app.post("/login",userMethod.login);
-  	app.post("/users/passwordreset",userMethod.passwordReset);
-  	app.post("/users/updatepassword",userMethod.updatePassword);
-  	app.post("/users/delete",userMethod.deleteUser);
+	router.post('/users',userMethod.create)
+	router.get("/user",userMethod.show);
+  	router.post("/login",userMethod.login);
+  	router.post("/users/passwordreset",userMethod.passwordReset);
+  	router.post("/users/updatepassword",userMethod.updatePassword);
+  	router.post("/users/delete",userMethod.deleteUser);
+  	router.get("/logout",userMethod.logout);
+  	
 }
 
 
@@ -73,7 +75,7 @@ userMethod.create=function(req,res)
 				console.log("UserID saved");
 			})
 
-		res.json({success:true});
+		res.json({success:true},data);
 	})
 
 }
@@ -83,11 +85,17 @@ userMethod.create=function(req,res)
 //show users
 userMethod.show=function(req,res)
 {
+	res.header("Access-Control-Allow-Origin", "http://localhost");
+
+    res.header("Access-Control-Allow-Methods", "GET, POST");
+
 	User.find({}).limit(20).skip(0).exec(function(err,data)
   {
-
-		res.status(200).json(data);
-  
+      Profile.find({}).exec(function(err,datas)
+      {
+      	console.log("data is")
+		res.json(data);
+  	  })
   })
 }
 
@@ -96,8 +104,11 @@ userMethod.show=function(req,res)
 //user login
 userMethod.login=function(req,res)
 {
+
+	
+
 	var userPassword=req.body.password;
-    console.log("Username",req.body.username)
+	
 
     User.findOne({username:req.body.username}).exec(function(err,data)	
     {
@@ -112,35 +123,41 @@ userMethod.login=function(req,res)
 	    		    	 	res.status(200).json("We Can't find the Person you are looking for.");
 	    		    
 	    		        } 
-	    		   		 else if (data) 
+	    	else if (data) 
 	    		    	{
-	    		    	
-	    		    		req.session.data=data;
+	    		    	if(userPassword)
+		    				{	
 	    		          
-	    		       		var id=data.id;
-	    		       		var hash = crypto.createHmac('sha256', data.salt);
-	    		       		userHash= hash.update(userPassword).digest('hex');
-	    
-	    		      
-	    		     
-	    		      		if (data.hashedPassword != userHash)
-	    		       		{
-	    
-	    		      			res.status(200).json("Authentication failed. Wrong password.");
-	    		        
-	    		       		}
-	    
+		    		       		var id=data.id;
+		    		       		var hash = crypto.createHmac('sha256', data.salt);
+		    		       		userHash= hash.update(userPassword).digest('hex');
+		    
+		    		      
+		    		     
+		    		      		if (data.hashedPassword != userHash)
+		    		       		{
+		    
+		    		      			res.status(200).json("Authentication failed. Wrong password.");
+		    		        
+		    		       		}
+		    
+		   		 				else
+		    	       			{
+		    	       				req.session.data=data;
+
+		    		      			var id = data._id;
+		    
+		        					console.log("session started");
+		    		        		res.status(200).json(data);
+		    
+		    	      			} 
+	    		      		}
 	    		      		else
-	    		       		{
-	    		      			var id = data._id;
-	    
-	        					console.log("session started");
-	    		        		res.status(200).json("You are logged in");
-	    
-	    		      		} 
-	    		      
+	    		      		{
+	    		      			res.status(200).json("Please enter your password");
+	    		      		}
 	    		    	}
-		   	 }
+		}
 
 		   	 else
 		   	 {
@@ -156,7 +173,7 @@ userMethod.login=function(req,res)
 //passwordReset
 userMethod.passwordReset=function(req,res,next)
 {
-  User.findOne({username:req.body.username}).exec(function(err,data)
+  User.findOne({emailID:req.body.emailID}).exec(function(err,data)
   {
     var answer=req.body.answer;
     console.log('answer',answer);
@@ -200,27 +217,36 @@ userMethod.updatePassword=function(req,res)
     var password=req.body.password;
     var id=req.body.id;
     
+    console.log("id",id)
+    console.log("password",password)
+    console.log("token",token)
 
 	User.findOne({_id:id}).exec(function(err,data)
 		{
-		 if(token==data.token)
-		 {
-    		var salt = Math.round(new Date().valueOf() * Math.random()) + '';
-    		var hash = crypto.createHmac('sha256', salt);
-    		var hashedPassword= hash.update(password).digest('hex');
-
-    
-  			User.findOneAndUpdate({_id:data.id},{$set:{salt:salt,hashedPassword:hashedPassword}}).exec(function(err,data)
-  			{
-    			console.log('password changed')
-    			res.json("Password:Changed")
-  			})
-  		 }
-  		 else
-  			{
-  				res.json("Wrong Token");
-  			}
-
+			if(data)
+				{	
+						 if(token==data.token)
+						 {
+				    		var salt = Math.round(new Date().valueOf() * Math.random()) + '';
+				    		var hash = crypto.createHmac('sha256', salt);
+				    		var hashedPassword= hash.update(password).digest('hex');
+			
+				    
+				  			User.findOneAndUpdate({_id:data.id},{$set:{salt:salt,hashedPassword:hashedPassword}}).exec(function(err,data)
+				  			{
+				    			console.log('password changed')
+				    			res.json("Password:Changed")
+				  			})
+				  		 }
+				  		 else
+				  			{
+				  				res.json("Wrong Token");
+				  			}
+				}
+			else
+				{
+					res.status(200).json("Wrong ID");
+				}	
 		})
 };
 
@@ -233,20 +259,27 @@ userMethod.deleteUser=function(req,res)
 
   User.remove({_id:id}).exec(function(err,data)
   {
-  	Profile.remove({UserID:id}).exec(function(err,data)
-	{
-
-		UserPost.remove({postID:id}).exec(function(err,data)
-		{ 
-  			CommentPost.remove({commentID:data._id}).exec(function(err,data)
-  			{
-  				console.log("User removed");
-  				res.status(200).json("User is removed");
-  			})
-
-     	})
-			
-	})
+  	if(data)
+  	{
+  		Profile.remove({UserID:id}).exec(function(err,data)
+  		{
+  	
+  			UserPost.remove({postID:id}).exec(function(err,data)
+  			{ 
+  	  			CommentPost.remove({commentID:data._id}).exec(function(err,data)
+  	  			{
+  	  				console.log("User removed");
+  	  				res.status(200).json("User is removed");
+  	  			})
+  	
+  	     	})
+  				
+  		})
+  	}
+  	else
+  	{
+  		res.status(200).json("User Not Found");
+  	}
 
   })
   
@@ -256,8 +289,15 @@ userMethod.deleteUser=function(req,res)
 //close of session
 userMethod.logout=function(req,res)
 {
+	if(req.session.data)
+	{
 	req.session.destroy();
+	console.log("logged out");
 	res.status(200).json("User logged out");
+	}	
+	else
+	{
+		res.status(200).json("No user logged in");
+	}
 }
-
 

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<title>Angular File</title>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+		<style>
+        .navbar { border-radius:0; }
+    	</style>
+		
+		
+
+	</head>
+
+	<body ng-app="myApp" ng-controller="myController">
+		
+
+
+		<nav class="navbar navbar-inverse" role="navigation">
+   			 <div class="navbar-header">
+      			  <a class="navbar-brand" ui-sref="#">Social Networking</a>
+   			 </div>
+    		 <ul class="nav navbar-nav">
+		        <li><a ui-sref="home">Home</a></li>
+		        <li><a ui-sref="about">About</a></li>
+    		  </ul>
+		</nav>
+
+
+		<div class="jumbotron text-center">
+		    <h1>The Home Page</h1>
+		    <p>This page demonstrates <span class="text-danger">nested</span> views.</p> 
+		    <div class="container">
+				<div ui-view></div>
+			</div>   
+		</div>
+
+		
+
+
+		<div >
+			<h1>Users</h1>
+			<table>
+				<tr>
+					<th>User Name</th>
+					<th>Email ID</th>
+				</tr>
+				<tr ng-repeat="x in content | orderBy:'username'">
+				
+				 <td>{{x.username | uppercase}}</td>
+				 
+				 
+				 <td>{{x.emailID}}</td>
+
+				</tr>
+			</table>
+		</div>
+<!-- 
+<div>
+	<a ui-sref="home.html">home</a>
+</div> -->
+
+
+
+
+
+		<div>
+			<form name="signin" novalidate>
+			   <fieldset>
+				  <legend>Sign In</legend>
+				  
+				<p>
+					<input type="text" name="username" ng-model="username" placeholder="Enter Name" style="float:left" required >
+					<span ng-show="signin.username.$touched && signin.username.$invalid">The name is required.</span>
+				</p><br>
+				    <!-- <div ng-show="form.$submitted || form.username.$touched">
+      				<div ng-show="form.username.$error.required">Tell us your name.</div>
+	    				</div> -->
+	    		<p>		
+				     <input type="text" name="password" ng-model="password" placeholder="Enter your password" required>
+				     <p ng-show="signin.password.$touched && signin.password.$error.required">The password is required.</p>
+				</p>
+
+				<p>
+					 <input type="submit" ng-click="save()" >
+				</p>
+
+				<br>
+				<h>{{formResponse}}</h><br>
+			  </fieldset>
+			</form>
+		
+		</div>
+
+
+		<!-- <div>		
+				<br><input type="submit" ng-click="logout()" value="Logout">
+				<h>{{logoutResponse}}</h><hr>
+				
+		</div> -->
+		
+		
+		<div>		
+			<form>
+			  <fieldset>
+			  	<legend>Forgotten Password</legend>
+
+				<input type="text" ng-model="emailid" placeholder="Email ID">
+				<input type="text" ng-model="answer" placeholder="Answer">
+				<span float="left"><br><input type="submit" ng-click="forgotPassword()" value="Get Token"></span><br>
+				<h>{{forgotResponse}}</h><br>
+			 </fieldset>
+			</form>
+				
+		</div>
+		
+		<div>		
+			<form>
+			  <fieldset>
+			  	<legend>Reset password Password</legend>
+
+				<input type="text" ng-model="token" placeholder="token">
+				<input type="text" ng-model="userid" placeholder="Enter UserID">
+				<input type="text" ng-model="Password" placeholder="New Password">
+				<span float="left"><br><input type="submit" ng-click="resetPassword()" value="Change Password"></span><br>
+				<h>{{resetResponse}}</h><br>
+			 </fieldset>
+			</form>
+				
+		</div>
+
+		<div>
+			<form>
+				<fieldset>
+				  <legend>Sign Up</legend>
+					<input type="text" ng-model="userName" placeholder="Enter Name">
+					<input type="text" ng-model="emailID" placeholder="Email ID">
+					<input type="text" ng-model="userpassword" placeholder="Password">
+					<h>Who is your first teacher</h>
+					<input type="text" ng-model="answer" placeholder="Answer">
+					<input type="submit" ng-click="signUp()" value="Sign Up"><br>
+					<h1>{{signUpResponse}}</h1>
+				</fieldset>
+			</form>
+			
+		</div>
+
+		<div>
+		   <fieldset>
+		      <legend>Delete User</legend>
+			<input type="text" ng-model="userID" placeholder="User ID">
+			<input type="submit" ng-click="Delete()"><br>
+			<h>{{deleteResponse}}</h>
+		  </fieldset>	
+		</div>
+
+
+		
+		<script>
+			var app=angular.module('myApp',['ngCookies','ui.router']);
+
+			app.controller('myController',function($scope,$http, $cookieStore, $window)
+			{
+
+				$http.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
+
+				$http.get("http://localhost:3000/api/user").then(function(response)
+				{
+					$scope.content=response.data;
+				});
+				
+				$scope.save=function()
+				{
+					$scope.username;
+					$scope.password;
+
+					$http({method:"POST",
+							url:"http://localhost:3000/api/login", 
+							data:{
+									username:$scope.username,
+									password:$scope.password
+								}
+					}).then(function(response)
+						{
+
+							
+
+							if(response.data)
+							{
+								$scope.formResponse=response.data;
+								$cookieStore.put("data",response.data)
+								
+							}
+							else
+							{
+								$scope.formResponse=response.data;
+							}
+						})
+				};
+
+				
+				// $scope.logout=function()
+				// {
+				// 	$http({method:"GET",
+				// 			url:"http://localhost:3000/api/logout",
+				// 			}).then(function(response)
+				// 			{
+				// 				$scope.logoutResponse=response.data;
+				// 				$cookieStore.remove("data");
+								
+				// 			});
+				// };
+
+
+				$scope.signUp=function()
+				{
+					$http({method:"POST",
+							url:"http://localhost:3000/api/users",
+							data:{
+								username:$scope.userName,
+								emailID:$scope.emailID,
+								password:$scope.userpassword,
+								answer:$scope.answer
+							}
+						}).then(function(response)
+							{
+								$scope.signUpResponse=response.data;
+							});
+				};	
+
+				$scope.Delete=function()
+				{
+					$http({method:"POST",
+							url:"http://localhost:3000/api/users/delete",
+							data:{
+								id:$scope.userID
+							}
+					}).then(function(response)
+					{
+						$scope.deleteResponse=response.data;
+					});
+				};
+
+				$scope.forgotPassword=function()
+				{
+					$http({method:"POST",
+							url:"http://localhost:3000/api/users/passwordReset",
+							data:{
+								emailID:$scope.emailid,
+								answer:$scope.answer
+							}
+					}).then(function(response)
+					{
+						$scope.forgotResponse=response.data;
+					});
+				};
+
+				$scope.resetPassword=function()
+				{
+					$http({method:"POST",
+							url:"http://localhost:3000/api/users/updatepassword",
+							data:{
+								id:$scope.userid,
+								password:$scope.Password,
+								token:$scope.token
+							}
+					}).then(function(response)
+					{
+						$scope.resetResponse=response.data;
+					});
+				};
+
+///
+
+///
+
+			});
+			
+			app.config(function($stateProvider, $urlRouterProvider) 
+			{
+    
+	    		$urlRouterProvider.otherwise('/');
+			    
+			    $stateProvider
+			    	.state('#',{
+			    		url:'/',
+			    		template:'Main Page'
+			    	})
+			        .state('home', {
+			            url: '/home',
+			            templateUrl: 'home.html',
+			            controller:'myCntr'
+			        })
+			        
+			        // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
+			        .state('about', {
+			            url:'/about',
+			            template:'there is nothing to show'
+
+			        });
+
+
+
+
+   			 });
+
+			app.controller('myCntr',function($scope,$http,$location, $window, $cookieStore)
+	 		{
+
+	 			$http.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
+
+					$scope.logout=function()
+					{
+						$http({method:"GET",
+								url:"http://localhost:3000/api/logout",
+								}).then(function()
+								{
+									$window.location=("/api/Angular.html#");
+
+									$cookieStore.remove("data");
+								});
+					};
+
+					$scope.postbody=function()
+					{
+						$http({method:"POST",
+								url:"http://localhost:3000/api/post",
+								data:{
+									postBody:$scope.postBody
+								}
+								}).then(function(response)
+								{
+									
+									$scope.posts.push(response.data);
+								});
+					};
+
+					
+					$http.get("http://localhost:3000/api/showpost").then(function(response)
+								{
+									
+									$scope.posts=response.data;
+								});
+
+					$scope.removePost = function (x) 
+					{
+
+						$http({method:"POST",
+								url:"http://localhost:3000/api/deletepost",
+								data:{
+									id:x
+									}
+								}).then(function(response)
+								{
+									
+									$scope.posts.splice(x,1);
+									
+								});
+	        						
+	    			} 
+
+	   		}); 			   
+
+	 	</script>
+
+	</body>
+</html> 
