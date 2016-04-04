@@ -6,6 +6,7 @@
  session=require('express-session'),
 cookieParser=require('cookie-parser'),
 expressValidator = require('express-validator'),
+cors = require('cors'),
 app=express();
 
 
@@ -14,7 +15,7 @@ const MongoStore = require('connect-mongo')(session);
 
 
 
-mongoose.connect('mongodb://localhost/test10009');
+mongoose.connect('mongodb://localhost/test10011');
 
 
  
@@ -36,9 +37,13 @@ app.use(bodyParser.json())
 
 app.use(expressValidator());
 
+app.use(cors());
+
 var router = express.Router();
 
 app.set('view engine','ejs');
+
+
 
 router.get('/Angular.html',function(req,res)
 {
@@ -48,6 +53,17 @@ router.get('/Angular.html',function(req,res)
 router.get('/home.html',function(req,res)
 {
   res.sendFile(__dirname+('/home.html'));
+})
+
+router.get('/mithrilJS.html',function(req,res)
+{
+  res.sendFile(__dirname+('/mithrilJS.html'));
+})
+
+
+router.get('/new.html',function(req,res)
+{
+  res.sendFile(__dirname+('/new.html'));
 })
 
 
@@ -75,6 +91,13 @@ fs.readdirSync(__dirname+"/controllers").forEach(function(filename)
 		require("./controllers/"+filename)(router);
 		
 	}
+});
+
+
+
+ fs.readdirSync(__dirname+"/Destination").forEach(function(filename)
+{
+  console.log(filename)
 });
 
 

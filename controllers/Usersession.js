@@ -43,13 +43,3 @@ UserSession.sessionDelete=function(req,res)
 }
 
 
-//show session data
-// UserSession.show=function(req,res)
-// {
-//   USession.find({}).exec(function(err,data)
-//   {
-//     res.json(data)
-//     console.log("data",data)
-//   })
-// }
-

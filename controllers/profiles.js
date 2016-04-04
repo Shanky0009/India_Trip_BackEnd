@@ -12,6 +12,7 @@ var router = express.Router();
 var userProfile={};
 
 
+
 module.exports=function(router){
 
 	router.post('/profile',userProfile.updateUser);
@@ -29,10 +30,10 @@ userProfile.updateUser=function(req,res)
 	var city=req.body.city;
 	var state=req.body.state;
 	var gender=req.body.gender;
-	var education=req.body.education;
-	var job=req.body.job;
+	var pinCode=req.body.pinCode;
 	var age=req.body.age;
 	var phoneNo=req.body.phoneNo;
+	var country=req.body.country;
 	var id=req.body.id;
 	
 	req.checkBody({
@@ -40,12 +41,12 @@ userProfile.updateUser=function(req,res)
   		'city': {notEmpty: true},
   		'first_name': { notEmpty: true},
   		'last_name': {notEmpty:true},
-  		'education': {notEmpty:true},
+  		'pinCode': {notEmpty:true},
   		'state': {notEmpty:true},
-  		'job': {notEmpty:true},
 		'gender': {notEmpty:true},
 		'age': {notEmpty:true},
-		'phoneNo': {notEmpty:true}									
+		'phoneNo': {notEmpty:true},
+		'country': {notEmpty:true}									
 	});
 
 	var errors = req.validationErrors();
@@ -100,19 +101,19 @@ userProfile.updateUser=function(req,res)
 					})
 				}
 
-				if(education!=null)
+				if(pinCode!=null)
 				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{education:req.body.education}}).exec(function(req,res)
+					Profile.findOneAndUpdate({UserID:id},{$set:{pinCode:req.body.pinCode}}).exec(function(req,res)
 					{
-					console.log("education updated");
+					console.log("pinCode updated");
 					})
 				}
 
-				if(job!=null)
+				if(country!=null)
 				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{job:req.body.job}}).exec(function(req,res)
+					Profile.findOneAndUpdate({UserID:id},{$set:{country:req.body.country}}).exec(function(req,res)
 					{
-					console.log("job updated");
+					console.log("country updated");
 					})
 				}
 
@@ -151,8 +152,8 @@ userProfile.updateUser=function(req,res)
 					city:city,
 					state:state,
 					gender:gender,
-					education:education,
-					job:job,
+					pinCode:pinCode,
+					country:country,
 					age:age,
 					phoneNo:phoneNo
 				}}).exec(function(err,data)

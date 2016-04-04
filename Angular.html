@@ -14,7 +14,7 @@
     	</style>
 		
 		
-
+ 
 	</head>
 
 	<body ng-app="myApp" ng-controller="myController">
@@ -75,8 +75,8 @@
 				  <legend>Sign In</legend>
 				  
 				<p>
-					<input type="text" name="username" ng-model="username" placeholder="Enter Name" style="float:left" required >
-					<span ng-show="signin.username.$touched && signin.username.$invalid">The name is required.</span>
+					<input type="text" name="emailID" ng-model="emailID" placeholder="Enter Email ID" style="float:left" required >
+					<span ng-show="signin.emailID.$touched && signin.emailID.$invalid">The name is required.</span>
 				</p><br>
 				    <!-- <div ng-show="form.$submitted || form.username.$touched">
       				<div ng-show="form.username.$error.required">Tell us your name.</div>
@@ -176,13 +176,12 @@
 				
 				$scope.save=function()
 				{
-					$scope.username;
-					$scope.password;
+					
 
 					$http({method:"POST",
 							url:"http://localhost:3000/api/login", 
 							data:{
-									username:$scope.username,
+									emailID:$scope.emailID,
 									password:$scope.password
 								}
 					}).then(function(response)
@@ -193,7 +192,8 @@
 							if(response.data)
 							{
 								$scope.formResponse=response.data;
-								$cookieStore.put("data",response.data)
+								
+								$cookieStore.put("data",response.data);
 								
 							}
 							else
@@ -275,10 +275,6 @@
 					});
 				};
 
-///
-
-///
-
 			});
 			
 			app.config(function($stateProvider, $urlRouterProvider) 
@@ -294,7 +290,8 @@
 			        .state('home', {
 			            url: '/home',
 			            templateUrl: 'home.html',
-			            controller:'myCntr'
+			            controller:'myCntr',
+			            data:{requiredLogin:true}
 			        })
 			        
 			        // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
@@ -304,10 +301,8 @@
 
 			        });
 
-
-
-
    			 });
+
 
 			app.controller('myCntr',function($scope,$http,$location, $window, $cookieStore)
 	 		{
@@ -347,7 +342,7 @@
 									$scope.posts=response.data;
 								});
 
-					$scope.removePost = function (x) 
+					$scope.removePost = function (x,y) 
 					{
 
 						$http({method:"POST",
@@ -358,13 +353,14 @@
 								}).then(function(response)
 								{
 									
-									$scope.posts.splice(x,1);
+									$scope.posts.splice(y,1);
 									
 								});
 	        						
 	    			} 
+	   		}); 	
 
-	   		}); 			   
+	   			   
 
 	 	</script>
 

@@ -10,6 +10,7 @@ var userSchema=Schema({
 	hashedPassword:{type:String,default:''},
 	answer:{type:String,default:''},
 	token:{type:String,default:''},
+	hotelID:{type:Array,default:[]},
  	created:{type:Date,default:Date.now,index:true}
  });
 

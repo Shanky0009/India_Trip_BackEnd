@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "test",
-    "start":"node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Shanky0009/new-project/issues"
   },
-  "homepage": "https://github.com/Shanky0009/new-project#readme"
+  "homepage": "https://github.com/Shanky0009/new-project#readme",
+  "dependencies": {
+    "satellizer": "^0.14.0"
+  }
 }

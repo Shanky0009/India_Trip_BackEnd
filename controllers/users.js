@@ -9,7 +9,7 @@ var mongoose=require("mongoose"),
 	uuid=require('uuid'),
 	bodyParser=require("body-parser");
 
-
+ 
 var router = express.Router();
 var userMethod={};
 
@@ -17,6 +17,7 @@ var userMethod={};
 module.exports=function(router)
 {
 	
+
 	router.post('/users',userMethod.create)
 	router.get("/user",userMethod.show);
   	router.post("/login",userMethod.login);
@@ -31,10 +32,12 @@ module.exports=function(router)
 //new user
 userMethod.create=function(req,res)
 {
+ 
 
-	var username=req.body.username
-	var password=req.body.password
-	var emailID=req.body.emailID
+
+	var username=req.body.username;
+	var password=req.body.password;
+	var emailID=req.body.emailID;
     var answer=req.body.answer;
 
 	console.log(username)
@@ -42,42 +45,57 @@ userMethod.create=function(req,res)
 	var salt=Math.round(new Date().valueOf()*Math.random())+'';
 	var hash=crypto.createHmac('sha256',salt);
 	var hashedPassword=hash.update(password).digest('hex');
+	
+	
 
-
-	var newUser=new User
-	  ({
-			username:username,
-			emailID:emailID,
-			salt:salt,
-			hashedPassword:hashedPassword,
-			answer:answer
-
-		});
-
+	User.findOne({username:req.body.username}).exec(function(err,data)
+	{
 		
-	newUser.save(function(err,data)
+		if(data)
 		{
-			if(err)
-			{
-			console.log("err",err);
-			}
-
-			var newProfile=new Profile
-			({
-				UserID:data._id
+			console.log("user aready there")
+			res.json("User already exists")
+		}
+		else
+		{
+   	
+			var newUser=new User
+			  ({
+					username:username,
+					emailID:emailID,
+					salt:salt,
+					hashedPassword:hashedPassword,
+					answer:answer
+		
+				});
+		
+				
+			newUser.save(function(err,data)
+				{
+					if(err)
+					{
+					console.log("err",err);
+					}
+		
+					var newProfile=new Profile
+					({
+						UserID:data._id
+					})
+		
+		 		 	console.log("profile id is",newProfile.UserID)
+		
+					newProfile.save(function(err,data)
+					{
+						res.json("User created");
+						console.log("UserID saved");
+						
+					})
+		
+				
 			})
-
- 		 	console.log("profile id is",newProfile.UserID)
-
-			newProfile.save(function(err,data)
-			{
-		    	console.log("user",data);
-				console.log("UserID saved");
-			})
-
-		res.json({success:true},data);
-	})
-
+		}
+	})		
+	
 }
 
 
@@ -85,16 +103,14 @@ userMethod.create=function(req,res)
 //show users
 userMethod.show=function(req,res)
 {
-	res.header("Access-Control-Allow-Origin", "http://localhost");
 
-    res.header("Access-Control-Allow-Methods", "GET, POST");
 
 	User.find({}).limit(20).skip(0).exec(function(err,data)
   {
       Profile.find({}).exec(function(err,datas)
       {
-      	console.log("data is")
-		res.json(data);
+      	console.log("data",data)
+		res.send(data);
   	  })
   })
 }
@@ -106,25 +122,28 @@ userMethod.login=function(req,res)
 {
 
 	
-
+   
 	var userPassword=req.body.password;
-	
+	// var cookieData=req.body.cookieData;
+	// Cookies.set("data",cookieData, { expires: 1 });
+	// Cookies.get("data")==null;
 
-    User.findOne({username:req.body.username}).exec(function(err,data)	
+    User.findOne({emailID:req.body.emailID}).exec(function(err,data)	
     {
 
     	if (err) throw err;
+    	console.log("session",req.session.data);
 
     	if(!req.session.data)
-
 	   	{
 	    	if (!data) 
 	    		    	{
-	    		    	 	res.status(200).json("We Can't find the Person you are looking for.");
+	    		    	 	res.status(200).json("Please enter correct Email ID");
 	    		    
 	    		        } 
 	    	else if (data) 
 	    		    	{
+
 	    		    	if(userPassword)
 		    				{	
 	    		          
@@ -144,7 +163,7 @@ userMethod.login=function(req,res)
 		   		 				else
 		    	       			{
 		    	       				req.session.data=data;
-
+		    	       				console.log(req.session.data);
 		    		      			var id = data._id;
 		    
 		        					console.log("session started");
@@ -158,12 +177,11 @@ userMethod.login=function(req,res)
 	    		      		}
 	    		    	}
 		}
+	   	 else
+	   	 {
 
-		   	 else
-		   	 {
-
-		   	 	res.status(200).json("A user is already logged in");
-		   	 }
+	   	 	res.status(200).json("A user is already logged in");
+	   	 }
 
    }) 
 }
@@ -183,7 +201,7 @@ userMethod.passwordReset=function(req,res,next)
     	  res.status(200).json("Can't find the person you are looking for!");
     }
 
-    else
+    else 
     {
       var id=data._id;
       if (data.answer!=answer) 
@@ -221,7 +239,7 @@ userMethod.updatePassword=function(req,res)
     console.log("password",password)
     console.log("token",token)
 
-	User.findOne({_id:id}).exec(function(err,data)
+	User.findOne({emailID:req.body.emailID}).exec(function(err,data)
 		{
 			if(data)
 				{	

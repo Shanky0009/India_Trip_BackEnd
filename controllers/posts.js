@@ -25,10 +25,12 @@ module.exports=function(router) {
 //user posts
 userPost.UPost=function(req,res)
 {
-	if(req.session.data)
+	var userdata={};
+	var userData=req.body.userdata;
+	if(userData!=null)
 	{	
 		var postBody=req.body.postBody;
-		var sessionid=req.session.data._id;
+		var sessionid=userData._id;
 		console.log("session",sessionid);
 
 		var newPost=new UserPost
@@ -77,19 +79,26 @@ userPost.SPost=function(req,res)
 	res.header("Access-Control-Allow-Origin", "http://localhost");
 
     res.header("Access-Control-Allow-Methods", "GET, POST");
-
-	UserPost.find({postID:req.session.data._id}).exec(function(err,data)
-	{
-		if(!data) res.status(200).json("no data found");
-
-		else
-		{
-			CommentPost.find({commentID:data._id}).exec(function(err,datas)
-			{
-			res.status(200).json(data);
-			})
-		}
-	})
+    if(req.body.userdata!=null)
+    {
+    	UserPost.find({postID:req.body.userdata._id}).exec(function(err,data)
+    	{
+    		if(!data) res.status(200).json("no data found");
+    
+    		else
+    		{
+    			CommentPost.find({commentID:data._id}).exec(function(err,datas)
+    			{
+    			res.status(200).json(data);
+    			})
+    		}
+    	})
+    }
+    else
+    {
+    	res.status(200).json("no id present");
+    	console.log("no id present");
+    }
 }
 
 //post comments
