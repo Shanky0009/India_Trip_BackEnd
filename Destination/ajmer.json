@@ -1,5 +1,4 @@
-{
-	
+{	
 	"Place":"Ajmer",
 	
 	"Description":"Founded in the seventh century by Ajaipal Chauhan, Ajmer derives its name from Ajaymeru, the invincible hill, at the foot of which the city stands today. Surrounded by the Aravalli mountain range, Ajmer is an oasis located between green hills.Ajmer is a popular pilgrimage; the Dargah Sharif – the tomb of the Sufi Saint Khwaja Moinuddin Chisti is revered by the Muslims.Ajmer is also the base for visiting Pushkar, the abode of Lord Brahma; Pushkar Lake is a sacred spot for the Hindus. During the month of Kartik (October/November) devotes throng in large numbers here to bathe in the sacred lake.",
@@ -18,5 +17,7 @@
 
 	"Tourism_Office":"Tourist Reception Centre, Hotel Khadim (RTDC) Near Bus Station Ajmer Tel: 0145 2627426;Tourist Information Bureau, Railway Station (1st Class Exit), Ajmer; Tourist Information Bureau, Hotel Sarovar (RTDC) Campus, Pushkar; Website:www.rtdc.in//www.rajasthantourism.gov.in E-mail:powrtdc@yahoo.com ",
 	
-	"State":"Jaipur"
+	"State":"Jaipur",
+
+	"url":"/images/IMG_3094.JPG"
 }

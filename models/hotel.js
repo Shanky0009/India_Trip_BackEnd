@@ -4,8 +4,8 @@ var mongoose=require("mongoose"),
 
  
 var hotelSchema=Schema({
- 	hotelName:{type:String,default:'',index:{unique:true}},
- 	hotelemail:{type:String,default:'',index:{unique:true}},
+ 	hotelName:{type:String,default:''},
+ 	hotelemail:{type:String,default:''},
  	hotelPhone:{type:String,default:''},	
 	hotelPrice:{type:String,default:''},
 	hotelType:{type:String,default:''},
@@ -17,7 +17,7 @@ var hotelSchema=Schema({
 	offer:{type:String,default:''},
 	status:{type:String,default:''},
 	payment:{type:String,default:''},
-	// cookieData:{type:String,default:''},
+	cancelStatus:{type:String,default:''},
  	created:{type:Date,default:Date.now,index:true}
  });
 

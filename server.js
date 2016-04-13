@@ -15,7 +15,7 @@ const MongoStore = require('connect-mongo')(session);
 
 
 
-mongoose.connect('mongodb://localhost/test10011');
+mongoose.connect('mongodb://localhost/test10012');
 
 
  
@@ -99,7 +99,10 @@ fs.readdirSync(__dirname+"/controllers").forEach(function(filename)
 {
   console.log(filename)
 });
-
+fs.readdirSync(__dirname+"/Hotel").forEach(function(filename)
+{
+  console.log(filename)
+});
 
 app.use("/api",router);
 /*app.get('/',function(req,res){
