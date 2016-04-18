@@ -1,30 +1,41 @@
-//modules required
+/*
+Load all models here
+*/
 var mongoose=require("mongoose"),
 	Profile=mongoose.model("Profile"),
 	User=mongoose.model("User"),
 	express=require("express"),
 	app=express(),
+	bodyParser=require("body-parser"),
+	router = express.Router();
 
-	bodyParser=require("body-parser");
-
-var router = express.Router();
-
+/*
+Empty HTTP method object.
+*/
 var userProfile={};
 
 
-
+/*
+Routings/controller goes here
+*/
 module.exports=function(router){
-
 	router.post('/profile',userProfile.updateUser);
 	router.get('/showprofile',userProfile.show);
 	router.post('/userprofile',userProfile.showOne);
 }
 
 
-//update profile
+/**************************************************************************************************************************/
+/***************************************** All the HTTP methods goes here *************************************************/
+/**************************************************************************************************************************/
+
+
+
+/********************************************
+  Users can update their profile accordingly.
+*********************************************/
 userProfile.updateUser=function(req,res)
 {
-
 	var first_name=req.body.first_name;
 	var last_name=req.body.last_name;
 	var address=req.body.address;
@@ -36,20 +47,7 @@ userProfile.updateUser=function(req,res)
 	var phoneNo=req.body.phoneNo;
 	var country=req.body.country;
 	var id=req.body.UserID;
-	
-
-	console.log("F",first_name)
-	console.log("L",last_name)
-	console.log("A",address)
-	console.log("C",city)
-	console.log("S",state)
-	console.log("G",gender)
-	console.log("P",pinCode)
-	console.log("P",phoneNo)
-	console.log("D",DOB)
-	console.log("C",country)
-	console.log("I",id)
-	
+		
 	req.checkBody({
  		'address': {notEmpty: true},
   		'city': {notEmpty: true},
@@ -64,146 +62,92 @@ userProfile.updateUser=function(req,res)
 	});
 
 	var errors = req.validationErrors();
-
-  		if (errors.length<10) 
-  		{
-				if(first_name!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{first_name:req.body.first_name}}).exec(function(err,data)
-					{
-					console.log(err)
-					console.log("first name updated");
-					})
-				}
-
-				if(last_name!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{last_name:req.body.last_name}}).exec(function(err,data)
-					{
-					console.log("last name updated");
-					})
-				}
-
-				if(address!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{address:req.body.address}}).exec(function(err,data)
-					{
-					console.log("address updated");
-					})
-				}
-
-				if(city!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{city:req.body.city}}).exec(function(err,data)
-					{
-					console.log("city updated");
-					})
-				}
-
-				if(state!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{state:req.body.state}}).exec(function(req,res)
-					{
-					console.log("state updated");
-					})
-				}
-
-				if(gender!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{gender:req.body.gender}}).exec(function(req,res)
-					{
-					console.log("gender updated");
-					})
-				}
-
-				if(pinCode!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{pinCode:req.body.pinCode}}).exec(function(err,data)
-					{
-					console.log("pinCode updated");
-					})
-				}
-
-				if(country!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{country:req.body.country}}).exec(function(err,data)
-					{
-					console.log("country updated");
-					})
-				}
-
-				if(DOB!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{DOB:req.body.DOB}}).exec(function(req,res)
-					{
-					console.log("DOB updated");
-					})
-				}
-
-				if(phoneNo!="")
-				{
-					Profile.findOneAndUpdate({UserID:id},{$set:{phoneNo:req.body.phoneNo}}).exec(function(err,data)
-					{
-					console.log("phoneNo updated");
-					})
-				}
-
-			res.status(200).json("User Profile Updated");
+	if (errors.length<10) {
+		if(first_name!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{first_name:req.body.first_name}}).exec(function(err,data){})
 		}
+		if(last_name!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{last_name:req.body.last_name}}).exec(function(err,data){})
+		}
+		if(address!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{address:req.body.address}}).exec(function(err,data){})
+		}
+		if(city!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{city:req.body.city}}).exec(function(err,data){})
+		}
+		if(state!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{state:req.body.state}}).exec(function(err,data){})
+		}
+		if(gender!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{gender:req.body.gender}}).exec(function(err,data){})
+		}
+		if(pinCode!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{pinCode:req.body.pinCode}}).exec(function(err,data){})
+		}
+		if(country!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{country:req.body.country}}).exec(function(err,data){})
+		}
+		if(DOB!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{DOB:req.body.DOB}}).exec(function(err,data){})
+		}
+		if(phoneNo!="") {
+			Profile.findOneAndUpdate({UserID:id},{$set:{phoneNo:req.body.phoneNo}}).exec(function(err,data){})
+		}
+	res.status(200).json("User Profile Updated");
 
-  		else if(errors)
-  		{
-  			res.send('There have been validation errors: ' + errors, 400);
-    		return;
-
-  		}
- 
-  		else{
-			Profile.findOneAndUpdate({UserID:id},
-				{$set:{
-					first_name:first_name,
-					last_name:last_name,
-					address:address,
-					city:city,
-					state:state,
-					gender:gender,
-					DOB:DOB,
-					pinCode:pinCode,
-					country:country,
-					phoneNo:phoneNo
-				}}).exec(function(err,data)
-				{
-					if(err) throw err;
-				  		console.log("profile updated")
-				  		res.json("Profile Updated");
-				})
-			}
-			 	
+	} else if(errors) {
+		res.status(400).json('There have been validation errors: ' + errors);
+		return;
+	} else {
+		Profile.findOneAndUpdate({UserID:id},
+			{$set:{
+				first_name:first_name,
+				last_name:last_name,
+				address:address,
+				city:city,
+				state:state,
+				gender:gender,
+				DOB:DOB,
+				pinCode:pinCode,
+				country:country,
+				phoneNo:phoneNo
+		}}).exec(function(err,data)
+		{
+			if(err) throw err;
+	  		res.json("Profile Updated");
+		})
+	}		 	
 }
+/*****************************************************
+  Users can update their profile accordingly ends here.
+******************************************************/
 
 
-//show users profile
-userProfile.show=function(req,res)
-{
-	Profile.find({}).limit(20).skip(0).exec(function(err,data)
-  {
 
+/*********************************
+  Admin can view all users profile.
+**********************************/
+userProfile.show=function(req,res) {
+	Profile.find({}).limit(20).skip(0).exec(function(err,data) {
 		res.status(200).json(data);
-  
   })
 }
+/******************************************
+  Admin can view all users profile ends here.
+********************************************/
 
-userProfile.showOne=function(req,res)
-{
-	var userData=req.body.cookieData
-	console.log(userData);
-	
+
+
+/*****************************
+  Users can view their profile
+*******************************/
+userProfile.showOne=function(req,res) {
+	var userData=req.body.cookieData	
 	var id=userData._id;
-	console.log(id);
-	Profile.findOne({UserID:id}).limit(20).skip(0).exec(function(err,data)
-  {
-  		console.log("data",data);
+	Profile.findOne({UserID:id}).limit(20).skip(0).exec(function(err,data) {
 		res.status(200).json(data);
-  
   })
 }
+/***************************************
+  Users can view their profile ends here.
+****************************************/

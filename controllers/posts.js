@@ -1,15 +1,25 @@
-//modules required
+/*
+Load all models here
+*/
 var mongoose=require("mongoose"),
 	Profile=mongoose.model("Profile"),
 	UserPost=mongoose.model("UserPost"),
 	CommentPost=mongoose.model("CommentPost"),
 	express=require("express"),
 	app=express(),
-	bodyParser=require("body-parser");
+	bodyParser=require("body-parser")
+	router = express.Router();
 
+
+/*
+Empty HTTP method object.
+*/
 userPost={};
-var router = express.Router();
 
+
+/*
+Routings/controller goes here
+*/
 module.exports=function(router) {
 
 	router.post('/post',userPost.UPost);
@@ -21,106 +31,114 @@ module.exports=function(router) {
 	router.post('/deletepost',userPost.DelPost);
 }
 
+/**************************************************************************************************************************/
+/***************************************** All the HTTP methods goes here *************************************************/
+/**************************************************************************************************************************/
 
-//user posts
+
+/******************************
+  Users can POST their reviews.
+*******************************/
 userPost.UPost=function(req,res)
 {
 	var userdata={};
 	var userData=req.body.userdata;
-	if(userData!=null)
-	{	
+	if(userData!=null) {	
 		var postBody=req.body.postBody;
 		var sessionid=userData._id;
-		console.log("session",sessionid);
-
-		var newPost=new UserPost
-		({
-					postID:sessionid,
-					postBody:postBody
+		var newPost=new UserPost ({
+			postID:sessionid,
+			postBody:postBody
 		
-				})
-
-		newPost.save(function(err,data)
-		{	
-			console.log("new post created");
+		})
+		newPost.save(function(err,data) {	
 			res.status(200).json(data);
 
 		})
-	}
-	else
-	{
-			console.log("post not executed");
-			res.status(200).json("No user logeed in");
+	} else {
+		res.status(200).json("No user logeed in");
 	}
 
 }
 
-//post likes
+/****************************************
+  Users can POST their reviews ends here.
+*****************************************/
+
+
+/********************************************
+  Other Users can like posts of other users.
+*********************************************/
 userPost.PLike=function(req,res)
 {
 
 	UserPost.findOneAndUpdate({_id:req.body.id},{$push:{postLike:req.body.postLike}},function(err,data)
 	{ 
 		if(!data) res.status(200).json("no data found");
-		else
-		{
-			console.log("You liked the post");
-			console.log("liked",data.postLike.length);
+		else {
 			var u=data.postLike.length;
 			res.status(200).json("No. of Users that Liked the Post"+" "+u);
 		}
 	})
 }
 
+/****************************************************
+  Other Users can like posts of other users ends here.
+*****************************************************/
 
-//show posts and there comments
+
+
+/*******************************************
+  Displays Users posts below respective post
+********************************************/
 userPost.SPost=function(req,res)
 {
-	res.header("Access-Control-Allow-Origin", "http://localhost");
-
-    res.header("Access-Control-Allow-Methods", "GET, POST");
-    if(req.body.userdata!=null)
-    {
-    	UserPost.find({postID:req.body.userdata._id}).exec(function(err,data)
-    	{
+    if(req.body.userdata!=null) {
+    	UserPost.find({postID:req.body.userdata._id}).exec(function(err,data) {
     		if(!data) res.status(200).json("no data found");
-    
-    		else
-    		{
-    			CommentPost.find({commentID:data._id}).exec(function(err,datas)
-    			{
-    			res.status(200).json(data);
+    		else {
+    			CommentPost.find({commentID:data._id}).exec(function(err,datas){
+    				res.status(200).json(data);
     			})
     		}
     	})
-    }
-    else
-    {
+    } else {
     	res.status(200).json("no id present");
-    	console.log("no id present");
     }
 }
 
-//post comments
+/*****************************************************
+  Displays Users posts below respective post ends here
+******************************************************/
+
+
+
+/*********************************************
+  Other Users can comment on other users posts
+**********************************************/
+
 userPost.UComment=function(req,res)
 {	
 	UserPost.findOne({postID:req.body.id}).exec(function(err,data)
 	{
-		var newCommentPost=new CommentPost
-		({
+		var newCommentPost=new CommentPost ({
 			commentID:data._id,
 			postComment:req.body.postComment
 		})
-		newCommentPost.save(function(err,data)
-		{
-			console.log("comment save");
+		newCommentPost.save(function(err,data) {
 			res.status(200).json(data);
 		})
 	})
-
 }
 
-//show all comments for all users
+/******************************************************
+  Other Users can comment on other users posts ends here
+********************************************************/
+
+
+/*************************************************
+  Displays Other Users comment on respective posts
+***************************************************/
 userPost.SComment=function(req,res)
 {	
 	CommentPost.find({}).exec(function(err,data)
@@ -129,44 +147,49 @@ userPost.SComment=function(req,res)
 	})
 
 }
+/**********************************************************
+  Displays Other Users comment on respective posts ends here
+************************************************************/
 
 
-//comment likes
+
+/*********************************************
+  Other Users can like comment on users posts
+**********************************************/
+
 userPost.CLike=function(req,res)
 {
 	CommentPost.findOneAndUpdate({_id:req.body.id},{$push:{commentLike:req.body.commentLike}}).exec(function(err,data)
 	{	
-		console.log("comment liked")
 		var l=data.commentLike.length;
 		res.status(200).json("No of people that liked your comment"+" "+l);
 
 	})
 }
 
+/********************************************************
+  Other Users can like comment on users  posts ends here
+*********************************************************/
 
-//delete post and there comments
+
+
+/************************************
+  Users can their posts and comments.
+*************************************/
+
 userPost.DelPost=function(req,res)
-{
-    
-   if(req.body.id)
-  	{
-	  UserPost.remove({_id:req.body.id}).exec(function(err,data)
-	  { 
-	  	  
-		  		console.log(req.body.id);
-		  		CommentPost.remove({commentID:data._id}).exec(function(err,data)
-		  		{
-		  			console.log("data removed");
-		  			res.status(200).json("Post is removed");
-		  		})
-	  		
-	  })
-  	}
-  	else
-  	{	
-		console.log("No ID Defined")
+{   
+   if(req.body.id) {
+	  	UserPost.remove({_id:req.body.id}).exec(function(err,data) {   	  
+			CommentPost.remove({commentID:data._id}).exec(function(err,data) {
+			  			res.status(200).json("Post is removed");
+			})
+	  	 })
+  	} else {	
 		res.status(404).json("Worng ID")
-  	}
-    
+  	}   
 }
   
+/*********************************************
+  Users can their posts and comments ends here
+**********************************************/
