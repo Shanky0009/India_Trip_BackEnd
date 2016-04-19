@@ -1,5 +1,5 @@
 /*
-Load HTTP access control(CROS)
+Load all models here
 */
 var session=require('express-session'),
     cookieParser=require('cookie-parser'),
