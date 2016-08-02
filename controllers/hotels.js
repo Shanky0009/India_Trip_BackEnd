@@ -9,6 +9,7 @@ var mongoose=require("mongoose"),
 	fs=require('fs'),
 	Busboy = require('busboy'),
 	bodyParser=require("body-parser"),
+	os=require("os"),
     router = express.Router();
 
 /*
@@ -70,7 +71,6 @@ hotelMethod.book=function(req,res)
 	
 	if(cookieData) {
 		User.findOne({_id:cookieData._id}).exec(function(err,data) {
-			console.log(cookieData);
 			if(!data) {
 				res.json("no user logged in");
 			} else {
@@ -248,16 +248,21 @@ hotelMethod.search=function(req,res)
 {	
 	var hotelData=[];
 	var fileData;
-	var place=req.body.place
+	var plc=req.body.place;
+	var place=plc.toLowerCase();
+
 
 		fs.readdirSync(process.cwd()+"/Hotel/").forEach(function(filename)
 		{	
 			if(filename.indexOf('.json')) {
 				var hotel = require(process.cwd()+"/Hotel/"+filename);
-				if(hotel.place==place){
+				var HPlace=hotel.place;
+				var HState=hotel.State;
+		
+				if(HPlace.match(place)){
 					hotelData.push(require(process.cwd()+"/Hotel/"+filename));					
 				}
-				else if(hotel.State==place){
+				else if(HState.match(place)){
 					hotelData.push(require(process.cwd()+"/Hotel/"+filename));
 				}
 				else{
@@ -279,7 +284,7 @@ hotelMethod.search=function(req,res)
 hotelMethod.uploadImage=function(req,res){
     var busboy = new Busboy({ headers: req.headers });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) { 
-      var fstream = fs.createWriteStream('/home/shanky/Project/app/images/hotel/' + filename); 
+      var fstream = fs.createWriteStream('/home/'+process.env.USER+'/India_Trip_Front_End/app/images/hotel/' + filename); 
       file.pipe(fstream)	      
       file.on('data', function(data) {   });
       file.on('end', function() {   });

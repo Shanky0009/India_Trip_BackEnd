@@ -1,0 +1,28 @@
+<section>
+	<form role="form" name="signUpForm" ng-submit="signUp()" novalidate>
+		<fieldset>
+			<div class="form-group">
+				<label for="UName" class="label label-default">User Name</label>
+				<input class="form-control" type="text" name="UName" placeholder="UserName" ng-model="usenrame" ng-required="true">
+				<p ng-show="signUpForm.UName.$invalid && signUpForm.UName.$touched"> Enter a name</p>	
+			</div>
+			<div class="form-group">
+				<label for="email" class="label label-default">Email ID</label>	
+				<input class="form-control" type="email" name="email" placeholder="Email ID" ng-model="emailID" ng-required="true">
+				<p ng-show="signUpForm.email.$invalid && signUpForm.email.$touched"> must be a valid email</p>
+			</div>
+			<div class="form-group">
+				<label for="password" class="label label-default">Password</label>	
+				<input class="form-control" type="password" name="password" placeholder="Password" ng-model="password" ng-required="true">
+				<p ng-show="signUpForm.password.$invalid && signUpForm.password.$touched"> must be a valid password</p>
+			</div>
+			<div class="form-group">	
+				<label for="answer" class="label label-default">Who was your first teacher?</label>
+				<input class="form-control" type="text" name="answer" placeholder="Your Answer" ng-model="answer" ng-required="true">
+			</div>	
+			<button type="submit" class="btn btn-default" ng-disabled="signUpForm.$invalid">Sign Up</button>
+			<P><a class="btn btn-default" href="#/signIn">Sign In</a></P>
+		</fieldset>
+	</form>
+	<div ng-show="response1">{{response1}}</div>
+</section>

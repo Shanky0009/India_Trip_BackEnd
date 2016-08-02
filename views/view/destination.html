@@ -1,0 +1,18 @@
+<section>
+	<h1>Destinations</h1>
+	<li class="btn-group" ng-repeat="destinationData in destinationData.data" style="width:5%; float:left;">
+		<button class="btn btn-primary" ng-click="destinationInfo($index)" 
+				data-toggle="tooltip" data-placement="top" title={{destinationData.Place}}>
+			<img class="img-rounded" src=".{{destinationData.url}}" style="width:70px; height: 70px; float: left;">
+		</button>
+	</li>
+	<div id="modal" ng-show="destinationInfo" ng-click="closeModal($event)">
+		<div class="descInfo"> 
+			<span id="closeMod" ng-click="closeModal($event)">&times;</span>
+			<h1>{{destinationPlace}}</h1>
+			<h2>{{destinationDesc}}</h2>
+			<h2>{{destinationTemp}}</h2>
+			<h2>{{destinationState}}</h2>
+		</div>
+	</div>
+</section>

@@ -9,6 +9,7 @@ var mongoose=require("mongoose"),
     Busboy = require('busboy'),
     cors = require('cors'),
 	bodyParser=require("body-parser"),
+	os=require("os"),
 	router = express.Router();
 
 /*
@@ -84,7 +85,7 @@ userDestination.uploadImage=function(req,res)
 {
   	var busboy = new Busboy({ headers: req.headers });
 	busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-	  var fstream = fs.createWriteStream('home/shanky/Project/app/images/destination/' + filename); 
+	  var fstream = fs.createWriteStream('/home/'+process.env.USER+'/India_Trip_Front_End/app/images/destination/' + filename); 
 	  file.pipe(fstream)	      	      
 	  file.on('data', function(data) {   });
 	  file.on('end', function() {    });
@@ -118,7 +119,7 @@ userDestination.createDestination=function(req,res)
 		  Tourism_Office:req.body.Tourism_Office,
 		  state:req.body.state,
 		  url:req.body.url
-	}:
+	};
 	var filename=req.body.Place+".json";
 	var outputFilename = process.cwd()+'/Destination/'+filename;
 	fs.writeFile(outputFilename, JSON.stringify(destinationData, null, 4), function(err) {

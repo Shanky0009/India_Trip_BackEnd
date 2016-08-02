@@ -5,8 +5,6 @@ var mongoose=require("mongoose"),
 	User=mongoose.model("User"),
 	Profile=mongoose.model("Profile"),
 	Hotel=mongoose.model("Hotel"),
-	UserPost=mongoose.model("UserPost"),
-	CommentPost=mongoose.model("CommentPost"),
 	express=require("express"),
 	app=express(),
 	crypto=require('crypto'),
@@ -163,7 +161,7 @@ userMethod.passwordReset=function(req,res,next)
 		    } else {
 		        var token = uuid.v4();
 		        User.findOneAndUpdate({_id:data._id},{$set:{token:token}}).exec(function(err,data) {  })
-		        res.status(200).json("token",token);
+		        res.status(200).json(token);
 		    }
 	    }    
     })

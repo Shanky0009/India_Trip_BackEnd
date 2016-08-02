@@ -15,7 +15,12 @@ var express=require('express'),
 /*
 connects to local database
 */
-mongoose.connect('mongodb://localhost/test10012');
+var mongoURI = "mongodb://localhost:27017/test10000";
+var MongoDB = mongoose.connect(mongoURI).connection;
+MongoDB.on('error', function(err) { console.log(err.message); });
+MongoDB.once('open', function() {
+  console.log("mongodb connection open");
+});
 
 
 //Load cookie parser
@@ -32,6 +37,36 @@ app.use(expressValidator());
 
 //Load HTTP access control(CROS)
 app.use(cors());
+
+
+
+app.get('/index.html',function(req,res)
+{
+	res.sendFile(__dirname+('/views/index.html'));
+});
+
+// fs.readdirSync(__dirname+"/views/lib").forEach(function(filename)
+// {
+// 	if(filename.indexOf('.js')) {
+// 	require(__dirname+"/views/lib/"+filename);
+// 	}
+// });
+
+// fs.readdirSync(__dirname+"/views/js").forEach(function(filename)
+// {
+// 	if(filename.indexOf('.js')) {
+// 	require(__dirname+"/views/js/"+filename);
+// 	}
+// });
+
+// fs.readdirSync(__dirname+"/views/js/controllers").forEach(function(filename)
+// {
+// 	if(filename.indexOf('.js')) {
+// 	require(__dirname+"/views/js/controllers/"+filename);
+// 	}
+// });
+
+
 
 
 /*************************************************

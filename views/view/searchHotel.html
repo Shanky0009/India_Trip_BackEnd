@@ -1,0 +1,39 @@
+<section id="htlSrchDesc">
+	<div class="htlSearch">
+		<label for place>Search Your hotel</label>
+		<input class="form-control" type="search" ng-model="place" >
+		<a ng-click="placeHotel()" class="btn btn-default btn-lg">
+		  <span class="glyphicon glyphicon-search"></span> Search
+		</a>
+		<!-- <button class="btn btn-primary" ng-click="placeHotel()">Q</button> -->
+	</div>
+	<div class="hotel">
+		<ul class="hoteldesc">
+			<li ng-repeat="responseH in responseH.data">
+				<div class="hotelHlder">
+					<div class="imgHlder">
+						<img  src=".{{responseH.url}}">
+					</div>
+					<div class="hotelData">
+						<p title="{{responseH.Hotel_name}}">
+							<h class="htName">{{responseH.Hotel_name}}</h>
+						</p>
+						<p title="{{responseH.Type_of_hotel}}">
+							<strong>{{responseH.Type_of_hotel}}</strong>
+						</p>
+						<span class="btnHlder" ng-click="book($index)">
+							<button>Book Now</button>
+							<small>Free Cancellation</small>
+						</span>
+					</div>
+				</div>
+				
+			</li>
+		</ul>
+		<h1 ng-hide="responseH.data">{{responseH}}</h1>
+	</div>
+
+		
+
+		
+</section>
