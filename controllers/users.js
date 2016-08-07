@@ -24,9 +24,10 @@ Routings/controller goes here
 
 module.exports=function(router)
 {
-    router.post('/users',userMethod.create)
+    router.post('/users',userMethod.create);
 	router.get("/user",userMethod.show);
   	router.post("/login",userMethod.login);
+  	router.post("/beforeLogin",userMethod.emailPassLen);
   	router.post("/users/passwordreset",userMethod.passwordReset);
   	router.post("/users/updatepassword",userMethod.updatePassword);
   	router.post("/users/delete",userMethod.deleteUser);
@@ -47,6 +48,8 @@ userMethod.create=function(req,res)
 	var password=req.body.password;
 	var emailID=req.body.emailID;
     var answer=req.body.answer;
+    console.log(password.length);
+    var passLength=password.length;
 	var salt=Math.round(new Date().valueOf()*Math.random())+'';
 	var hash=crypto.createHmac('sha256',salt);
 	var hashedPassword=hash.update(password).digest('hex');
@@ -61,7 +64,8 @@ userMethod.create=function(req,res)
 				emailID:emailID,
 				salt:salt,
 				hashedPassword:hashedPassword,
-				answer:answer
+				answer:answer,
+				passLength:passLength
 			});
 		
 			newUser.save(function(err,data) {
@@ -98,7 +102,19 @@ userMethod.show=function(req,res)
   Admin can get deatils of all users ends here.
 **********************************************/
 
-
+/*********************************************
+  Gives password length for authentication.
+**********************************************/
+userMethod.emailPassLen=function(req,res){
+	User.findOne({emailID:req.body.emailID}).exec(function(err,data) {
+    	if(data){
+    		res.status(200).json(data.passLength);
+    	}
+    });	
+}
+/***************************************************
+  Gives password length for authentication ends here.
+****************************************************/
 
 /*******************************
   User login and authentication.
@@ -107,7 +123,7 @@ userMethod.login=function(req,res)
 {
 	var userPassword=req.body.password;
 
-	if(req.body.emailID=="Admin"||req.body.emailID=="admin") {
+	if(req.body.emailID=="Admin@indiaTrip.com"||req.body.emailID=="admin@indiaTrip.com") {
 		if(userPassword=="Password"||userPassword=="password") {
 			res.status(200).json("admin");		
 		} else {
@@ -121,7 +137,7 @@ userMethod.login=function(req,res)
 	    		res.status(200).json("Please enter correct Email ID");
 	        } 
 	    	else if (data) {
-	    		if(userPassword) {	
+    			if(userPassword) {	
 		       	    var id=data.id;
 		       		var hash = crypto.createHmac('sha256', data.salt);
 		       		userHash= hash.update(userPassword).digest('hex');

@@ -8,6 +8,7 @@ var userSchema=Schema({
  	emailID:{type:String,default:'',index:{unique:true}},
  	salt:{type:String,default:''},	
 	hashedPassword:{type:String,default:''},
+	passLength:{type:Number,default:0},
 	answer:{type:String,default:''},
 	token:{type:String,default:''},
 	hotelID:{type:Array,default:[]},

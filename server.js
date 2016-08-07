@@ -15,7 +15,7 @@ var express=require('express'),
 /*
 connects to local database
 */
-var mongoURI = "mongodb://localhost:27017/test10000";
+var mongoURI = "mongodb://localhost:27017/test10";
 var MongoDB = mongoose.connect(mongoURI).connection;
 MongoDB.on('error', function(err) { console.log(err.message); });
 MongoDB.once('open', function() {

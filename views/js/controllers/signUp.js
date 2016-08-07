@@ -7,8 +7,8 @@ app.controller("signUpController",function ($scope,$http) {
 			url:"http://localhost:3000/api/users",
 			data:{
 				username:$scope.username,	
-				password:$scope.emailID,
-				emailID:$scope.password,
+				emailID:$scope.emailID,
+				password:$scope.password,
 				answer:$scope.answer
 			}
 		}).then(function(response)
