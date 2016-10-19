@@ -18,6 +18,12 @@
   },
   "homepage": "https://github.com/Shanky0009/new-project#readme",
   "dependencies": {
-    "satellizer": "^0.14.0"
+    "satellizer": "^0.14.0",
+    "express": "latest",
+    "cors": "latest",
+    "body-parser": "latest",
+    "cookie-parse": "latest",
+    "express-validator": "latest",
+    "uuid": "latest",
   }
 }
