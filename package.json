@@ -25,5 +25,9 @@
     "cookie-parse": "latest",
     "express-validator": "latest",
     "uuid": "latest",
+    "moongose": "latest",
+    "crypto": "latest",
+    "busboy": "latest",
+    "fs": "latest"
   }
 }
